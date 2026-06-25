@@ -1,0 +1,699 @@
+/* ==========================================================================
+   1. KHAI BÁO BIẾN TOÀN CỤC (CSS VARIABLES)
+   ========================================================================== */
+:root {
+    --theme-color: #FFC107;
+    --text-on-theme: #111111;
+    
+    --primary-bg: #f2f4f7;
+    --secondary-bg: #f5f5f5;
+    --text-color: #1f2937;
+    --border-color: #e4e7ec;
+    --accent-color: #ff9800;
+    --danger-color: #f44336;
+    --success-color: #4CAF50;
+    --card-bg: #f7f8fa;
+    --modal-bg: rgba(0,0,0,0.5);
+    
+    --header-bg: var(--theme-color);
+    --header-text: var(--text-on-theme);
+    --nav-bg: var(--card-bg);
+    --nav-border: var(--border-color);
+    --tab-color: var(--text-color);
+    --tab-active: var(--theme-color);
+    --tab-border: var(--theme-color);
+    --input-bg: var(--primary-bg);
+    --scroll-bg: var(--theme-color);
+    --scroll-text: var(--text-on-theme);
+    --modal-content-bg: var(--card-bg);
+    --modal-text: var(--text-color);
+    --stat-label-color: #777;
+}
+
+/* ==========================================================================
+   2. DARK MODE - GHI ĐÈ CÁC BIẾN (MẶC ĐỊNH BẬT)
+   ========================================================================== */
+[data-theme="dark"] {
+    --primary-bg: #121212;
+    --secondary-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --border-color: #333333;
+    --card-bg: #1e1e1e;
+    --modal-bg: rgba(0,0,0,0.8);
+    
+    --header-bg: var(--theme-color);
+    --header-text: var(--text-on-theme);
+    --nav-bg: #1e1e1e;
+    --nav-border: #333333;
+    --tab-color: #999999;
+    --tab-active: var(--theme-color);
+    --tab-border: var(--theme-color);
+    --input-bg: #2a2a2a;
+    --scroll-bg: #333333;
+    --scroll-text: #ffffff;
+    --modal-content-bg: #1e1e1e;
+    --modal-text: #e0e0e0;
+    --stat-label-color: #999;
+}
+
+/* Theme màu vàng cho light mode */
+.theme-yellow {
+    --theme-color: #FFC107;
+    --text-on-theme: #111111;
+    --header-bg: #FFC107;
+    --header-text: #111111;
+}
+
+/* Theme màu vàng cho dark mode */
+[data-theme="dark"].theme-yellow {
+    --theme-color: #FFC107;
+    --text-on-theme: #111111;
+    --header-bg: #FFC107;
+    --header-text: #111111;
+}
+
+/* ==========================================================================
+   3. RESET & BODY
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-bottom: calc(95px + env(safe-area-inset-bottom));
+}
+
+/* ==========================================================================
+   4. HEADER
+   ========================================================================== */
+.header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 15px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================================================
+   5. NAVIGATION TABS (Floating Menu)
+   ========================================================================== */
+.nav-tabs {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 30px);
+    max-width: 570px;
+    background-color: var(--nav-bg);
+    display: flex;
+    justify-content: space-around;
+    border: 1px solid var(--nav-border);
+    border-radius: 16px;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--tab-color);
+    padding: 15px 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    opacity: 1;
+    color: var(--tab-active);
+    font-weight: bold;
+    border-top: 3px solid var(--tab-border);
+}
+
+/* ==========================================================================
+   6. TAB CONTENT
+   ========================================================================== */
+.tab-content {
+    display: none;
+    padding: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ==========================================================================
+   7. CARDS
+   ========================================================================== */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+/* ==========================================================================
+   8. FORM
+   ========================================================================== */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+input[type="datetime-local"].form-control {
+    display: block;
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 47px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--theme-color);
+}
+
+/* ==========================================================================
+   9. BUTTONS
+   ========================================================================== */
+.btn {
+    background-color: var(--theme-color) !important;
+    color: var(--text-on-theme) !important;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.btn:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+   10. FAMILY GRID
+   ========================================================================== */
+.family-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 10px !important;
+    width: 100%;
+}
+
+.member-btn {
+    background-color: var(--theme-color);
+    color: var(--text-on-theme);
+    border: none;
+    padding: 12px 8px; 
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.9rem; 
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.member-btn:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+   11. MODAL
+   ========================================================================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-bg);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: var(--modal-content-bg);
+    color: var(--modal-text);
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-color);
+    background: none;
+    border: none;
+    transition: transform 0.3s ease;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.modal-close:hover {
+    transform: rotate(90deg);
+    background-color: var(--secondary-bg);
+}
+
+/* ==========================================================================
+   12. INFO ROWS / TABLES
+   ========================================================================== */
+.info-row {
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.info-row:hover {
+    background-color: var(--secondary-bg);
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: var(--stat-label-color);
+}
+
+.info-value {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 2px;
+    color: var(--text-color);
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin-top: 5px;
+}
+
+.history-table th, .history-table td {
+    padding: 10px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.history-table th {
+    font-weight: bold;
+    color: var(--stat-label-color);
+    background-color: var(--secondary-bg);
+}
+
+.history-table td.date-col {
+    white-space: nowrap;
+}
+
+.history-table td.amount-col {
+    text-align: right;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   13. SCROLL TO TOP BUTTON
+   ========================================================================== */
+.scroll-top {
+    position: fixed;
+    bottom: calc(100px + env(safe-area-inset-bottom)); 
+    right: 20px;
+    background-color: var(--scroll-bg);
+    color: var(--scroll-text);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    cursor: pointer;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+    z-index: 99;
+    transition: all 0.3s ease;
+}
+
+.scroll-top.show {
+    display: flex;
+}
+
+.scroll-top:hover {
+    transform: scale(1.1);
+}
+
+/* ==========================================================================
+   14. CHART & STATISTICS
+   ========================================================================== */
+.chart-container {
+    position: relative;
+    margin: 15px auto;
+    height: 260px;
+    width: 100%;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--border-color);
+    color: var(--text-color);
+}
+
+.stat-label {
+    color: var(--stat-label-color);
+    opacity: 0.7;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* ==========================================================================
+   15. ALERT BOX
+   ========================================================================== */
+.alert-box {
+    background-color: rgba(244, 67, 54, 0.08);
+    border-left: 4px solid var(--danger-color);
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .alert-box {
+    background-color: rgba(244, 67, 54, 0.2);
+}
+
+/* ==========================================================================
+   16. DARK MODE TOGGLE SWITCH
+   ========================================================================== */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--theme-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+.theme-text { color: var(--theme-color) !important; }
+.theme-bg { background-color: var(--theme-color) !important; color: var(--text-on-theme) !important; }
+
+/* ==========================================================================
+   17. APP INFO MODAL
+   ========================================================================== */
+.app-info-modal {
+    margin-top: 5px;
+}
+
+.info-row-app {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.info-row-app:hover {
+    background-color: var(--secondary-bg);
+    border-radius: 4px;
+}
+
+.info-label-app {
+    color: var(--stat-label-color);
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.info-value-app {
+    font-weight: 500;
+    color: var(--text-color);
+    text-align: right;
+    max-width: 60%;
+    word-break: break-word;
+}
+
+#btn-app-info {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+#btn-app-info:hover {
+    border-color: var(--theme-color);
+    background-color: var(--secondary-bg) !important;
+    transform: scale(1.02);
+}
+
+#btn-app-info:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+   18. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 480px) {
+    .header { 
+        font-size: 1rem; 
+        padding: 12px; 
+    }
+    
+    .tab-btn { 
+        font-size: 0.75rem; 
+        padding: 12px 3px; 
+    }
+    
+    .modal-content { 
+        width: 95% !important; 
+        padding: 15px !important;
+        max-height: 90vh !important;
+    }
+    
+    .family-grid { 
+        grid-template-columns: repeat(2, 1fr) !important; 
+    }
+    
+    .info-row-app {
+        font-size: 0.8rem;
+        padding: 8px 2px;
+    }
+    
+    .info-value-app {
+        max-width: 50%;
+        font-size: 0.8rem;
+    }
+    
+    .chart-container {
+        height: 200px;
+    }
+    
+    .history-table {
+        font-size: 0.75rem;
+    }
+    
+    .history-table th, 
+    .history-table td {
+        padding: 6px 4px;
+    }
+}
+
+/* ==========================================================================
+   19. SUMMARY HEADER - TỔNG THU/CHI TRONG THÁNG
+   ========================================================================== */
+.summary-header {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--secondary-bg) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+}
+
+.summary-header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.summary-icon {
+    font-size: 2.2rem;
+    margin-right: 16px;
+    line-height: 1;
+}
+
+.summary-info {
+    flex: 1;
+}
+
+.summary-label {
+    font-size: 0.8rem;
+    color: var(--stat-label-color);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.summary-amount {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+    transition: color 0.3s ease;
+}
+
+/* Dark mode cho summary header */
+[data-theme="dark"] .summary-header {
+    background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .summary-header {
+        padding: 12px 16px;
+    }
+    
+    .summary-icon {
+        font-size: 1.6rem;
+        margin-right: 12px;
+    }
+    
+    .summary-label {
+        font-size: 0.7rem;
+    }
+    
+    .summary-amount {
+        font-size: 1.2rem;
+    }
+}
+/* end SUMMARY HEADER */
