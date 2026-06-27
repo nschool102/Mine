@@ -17,17 +17,15 @@ const CATEGORIES = {
         "CON CỢP": ["Lương tháng", "Bổ sung lương", "Bổ sung thưởng"]
     },
     chi: {
-        "Ăn uống": ["Ăn sáng", "Ăn trưa", "Ăn tối", "Đi chợ, Siêu thị", "Ăn vặt, Đồ ngọt"],
-        "Chi tiêu thiết yếu": ["Điện", "Nước", "Internet", "Điện thoại", "Xăng", "Taxi, bus, xe công nghệ", "Dịch vụ công"],
-        "Mua sắm & Cá nhân": ["Quần áo", "Phụ kiện", "Mĩ phẩm", "Đồ gia dụng", "Đồ chơi", "Sách, Văn phòng phẩm", "Tiền tiêu vặt"],
-        "Y tế & Sức khỏe": ["Khám, chữa bệnh", "Thuốc", "Thực phẩm chức năng"],
-        "Giáo dục": ["Học phí", "Học thêm", "Quĩ lớp", "Lệ phí"],
-        "Giải trí": ["Coi phim", "Du lịch", "Quán cafe"],
+        "Chi khác": ["Từ thiện", "Biếu tặng", "Dịch vụ công"],
+        "Chi tiêu thiết yếu": ["Đi chợ, siêu thị", "Điện", "Nước", "Internet", "Xăng", "Tiền tiêu vặt", "Điện thoại", "Transportation"],
         "Đầu tư, tiết kiệm": ["Vàng", "Tiền mặt", "USDT", "Cho mượn"],
-        "Chi khác & Giao tế": ["Từ thiện", "Biếu tặng"]
+        "Giải trí": ["Cafe", "Coi phim", "Du lịch", "Nhà hàng"],
+        "Giáo dục": ["Học phí", "Học thêm", "Quĩ lớp", "Lệ phí"],
+        "Mua sắm": ["Đồ ăn, thức uống", "Đồ chơi", "Đồ gia dụng", "Mĩ phẩm", "Phụ kiện", "Quần áo", "Sách, Văn phòng phẩm", "Thực phẩm chức năng"],
+        "Y tế": ["Khám, chữa bệnh", "Thuốc"]
     }
 };
-
 
 const PALETTE = ["#4CAF50", "#8BC34A", "#2196F3", "#E91E63", "#9C27B0", "#F44336", "#FF9800", "#FFEB3B"];
 
@@ -43,89 +41,6 @@ let isSyncing = false;
 let notificationCheckInterval = null;
 
 // =========================================================================
-// HÀM XỬ LÝ NGÀY THÁNG CHO VIỆT NAM (GMT+7)
-// =========================================================================
-
-// Format ngày theo định dạng yyyy-mm-dd hh:mm:ss (GMT+7)
-function formatVietnamDateTime(date) {
-    if (!date) return '';
-    
-    let d;
-    if (typeof date === 'string') {
-        d = new Date(date);
-    } else {
-        d = new Date(date);
-    }
-    
-    if (isNaN(d.getTime())) return '';
-    
-    // Điều chỉnh về GMT+7
-    const offset = d.getTimezoneOffset();
-    const vietnamTime = new Date(d.getTime() + (offset + 420) * 60000);
-    
-    const year = vietnamTime.getFullYear();
-    const month = String(vietnamTime.getMonth() + 1).padStart(2, '0');
-    const day = String(vietnamTime.getDate()).padStart(2, '0');
-    const hours = String(vietnamTime.getHours()).padStart(2, '0');
-    const minutes = String(vietnamTime.getMinutes()).padStart(2, '0');
-    const seconds = String(vietnamTime.getSeconds()).padStart(2, '0');
-    
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-} // end function formatVietnamDateTime
-
-// Lấy thời gian hiện tại theo GMT+7
-function getVietnamNow() {
-    const now = new Date();
-    const offset = now.getTimezoneOffset();
-    return new Date(now.getTime() + (offset + 420) * 60000);
-} // end function getVietnamNow
-
-// Format date chỉ lấy phần ngày (yyyy-mm-dd)
-function formatDateOnly(d) {
-    if (!d) return '';
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-} // end function formatDateOnly
-
-// Lấy ngày hôm nay theo GMT+7
-function getVietnamToday() {
-    const now = getVietnamNow();
-    return formatDateOnly(now);
-} // end function getVietnamToday
-
-// Lấy ngày mai theo GMT+7
-function getVietnamTomorrow() {
-    const now = getVietnamNow();
-    now.setDate(now.getDate() + 1);
-    return formatDateOnly(now);
-} // end function getVietnamTomorrow
-
-// Hiển thị ngày dạng dd/mm/yyyy hh:mm
-function formatDisplayDate(dateStr) {
-    if (!dateStr) return '';
-    try {
-        if (typeof dateStr === 'string' && dateStr.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) {
-            const parts = dateStr.split(' ');
-            const dateParts = parts[0].split('-');
-            const timeParts = parts[1].split(':');
-            return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]} ${timeParts[0]}:${timeParts[1]}`;
-        }
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        return `${day}/${month}/${year} ${hours}:${minutes}`;
-    } catch(e) {
-        return dateStr;
-    }
-} // end function formatDisplayDate
-
-// =========================================================================
 // HÀM CHUYỂN ĐỔI SENTENCE CASE
 // =========================================================================
 function toSentenceCase(str) {
@@ -134,88 +49,6 @@ function toSentenceCase(str) {
     if (str === str.toUpperCase()) return str;
     return str.charAt(0).toUpperCase() + str.slice(1);
 } // end function toSentenceCase
-
-// =========================================================================
-// HÀM XỬ LÝ NGÀY THÁNG CHO VIỆT NAM (GMT+7)
-// =========================================================================
-
-// Hàm format ngày theo định dạng yyyy-mm-dd hh:mm:ss (GMT+7)
-function formatVietnamDateTime(date) {
-    if (!date) return '';
-    
-    let d;
-    if (typeof date === 'string') {
-        d = new Date(date);
-    } else {
-        d = new Date(date);
-    }
-    
-    if (isNaN(d.getTime())) return '';
-    
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    const seconds = String(d.getSeconds()).padStart(2, '0');
-    
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-} // end function formatVietnamDateTime
-
-// Hàm lấy thời gian hiện tại theo GMT+7
-function getVietnamNow() {
-    const now = new Date();
-    const offset = now.getTimezoneOffset();
-    const vietnamTime = new Date(now.getTime() + (offset + 420) * 60000);
-    return vietnamTime;
-} // end function getVietnamNow
-
-// Hàm format date chỉ lấy phần ngày (yyyy-mm-dd)
-function formatDateOnly(d) {
-    if (!d) return '';
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-} // end function formatDateOnly
-
-// Hàm lấy ngày hôm nay theo GMT+7
-function getVietnamToday() {
-    const now = getVietnamNow();
-    return formatDateOnly(now);
-} // end function getVietnamToday
-
-// Hàm lấy ngày mai theo GMT+7
-function getVietnamTomorrow() {
-    const now = getVietnamNow();
-    now.setDate(now.getDate() + 1);
-    return formatDateOnly(now);
-} // end function getVietnamTomorrow
-
-// Hàm hiển thị ngày dạng dd/mm/yyyy hh:mm
-function formatDisplayDate(dateStr) {
-    if (!dateStr) return '';
-    try {
-        // Nếu là chuỗi yyyy-mm-dd hh:mm:ss
-        if (typeof dateStr === 'string' && dateStr.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) {
-            const parts = dateStr.split(' ');
-            const dateParts = parts[0].split('-');
-            const timeParts = parts[1].split(':');
-            return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]} ${timeParts[0]}:${timeParts[1]}`;
-        }
-        // Nếu là Date object
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        return `${day}/${month}/${year} ${hours}:${minutes}`;
-    } catch(e) {
-        return dateStr;
-    }
-} // end function formatDisplayDate
 
 // =========================================================================
 // THÔNG BÁO ĐẨY (PUSH NOTIFICATION)
@@ -450,31 +283,16 @@ function updateLastSyncTime() {
 // =========================================================================
 function updateSummaryTotals() {
     getAllTransactions(data => {
-        const today = getVietnamNow();
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
         
         let totalThu = 0;
         let totalChi = 0;
         
         data.forEach(t => {
-            // Parse timestamp từ chuỗi yyyy-mm-dd hh:mm:ss
-            let tDate;
-            if (typeof t.timestamp === 'string' && t.timestamp.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) {
-                const parts = t.timestamp.split(' ');
-                const dateParts = parts[0].split('-');
-                tDate = new Date(
-                    parseInt(dateParts[0]),
-                    parseInt(dateParts[1]) - 1,
-                    parseInt(dateParts[2])
-                );
-            } else {
-                tDate = new Date(t.timestamp);
-            }
-            
-            if (!isNaN(tDate.getTime()) && 
-                tDate.getMonth() === currentMonth && 
-                tDate.getFullYear() === currentYear) {
+            const tDate = new Date(t.timestamp);
+            if (tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear) {
                 if (t.amount > 0) {
                     totalThu += t.amount;
                 } else {
@@ -500,7 +318,7 @@ function updateSummaryTotals() {
 // KHỞI TẠO INDEXEDDB
 // =========================================================================
 function initDB() {
-    const request = indexedDB.open("FamilyFinancePWA", 5);
+    const request = indexedDB.open("FamilyFinancePWA", 4);
     request.onupgradeneeded = function(e) {
         db = e.target.result;
         if (!db.objectStoreNames.contains("transactions")) {
@@ -614,47 +432,21 @@ function setupEventListeners() {
     }
 
     // ============================================================
-    // REMINDER ALERT MODAL - ĐÓNG BẰNG NÚT, CLICK OUTSIDE, ESC
-    // ============================================================
-    const reminderCloseBtn = document.getElementById('reminder-alert-close');
-    if (reminderCloseBtn) {
-        reminderCloseBtn.addEventListener('click', closeReminderAlert);
-    }
-
-    const reminderModal = document.getElementById('reminderAlertModal');
-    if (reminderModal) {
-        reminderModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeReminderAlert();
-            }
-        });
-    }
-
-    // ============================================================
-    // ĐÓNG MODAL BẰNG PHÍM ESC - HỖ TRỢ CẢ 3 MODAL
+    // ĐÓNG MODAL BẰNG PHÍM ESC
     // ============================================================
     document.addEventListener("keydown", function(e) {
         if (e.key === "Escape") {
-            // Đóng modal Family
             const familyModal = document.getElementById("familyModal");
             if (familyModal && familyModal.style.display === "flex") {
                 closeModal();
             }
-            // Đóng modal App Info
             const appInfoModal = document.getElementById("appInfoModal");
             if (appInfoModal && appInfoModal.style.display === "flex") {
                 closeAppInfoModal();
             }
-            // Đóng modal Reminder Alert
-            const reminderModal = document.getElementById("reminderAlertModal");
-            if (reminderModal && reminderModal.style.display === "flex") {
-                closeReminderAlert();
-            }
         }
     });
 } // end function setupEventListeners
-
-
 // end KHỞI TẠO DOM EVENTS
 
 // =========================================================================
@@ -732,17 +524,10 @@ function initFormOptions() {
         });
         updateSubtypes(mode);
 
-        const now = getVietnamNow();
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         const dateInput = document.getElementById(`${mode}-date`);
-        if (dateInput) {
-            // Format cho input datetime-local
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            dateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
-        }
+        if (dateInput) dateInput.value = now.toISOString().slice(0, 16);
     });
     initReminderDateOptions();
     initColorSettings();
@@ -791,7 +576,7 @@ function initReminderDateOptions() {
         ySel.innerHTML += `<option value="${i}">Năm ${i}</option>`;
     }
 
-    const today = getVietnamNow();
+    const today = new Date();
     dSel.value = today.getDate();
     mSel.value = today.getMonth() + 1;
     ySel.value = today.getFullYear();
@@ -815,17 +600,8 @@ function saveTransaction(event, mode) {
 
     const formattedNote = toSentenceCase(note);
 
-    let date;
-    if (dateVal) {
-        date = new Date(dateVal);
-    } else {
-        date = new Date();
-    }
-    
-    const timestamp = formatVietnamDateTime(date);
-
     const transaction = {
-        timestamp: timestamp,
+        timestamp: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
         type: type,
         subtype: subtype,
         amount: amount,
@@ -992,20 +768,14 @@ function renderChartsAndStats() {
         let catCurrentMonth = { "Tổng": 0, "Ăn uống": 0, "Đồ chơi": 0, "Mỹ phẩm": 0, "Quần áo": 0 };
         let catPrevMonth = { "Tổng": 0, "Ăn uống": 0, "Đồ chơi": 0, "Mỹ phẩm": 0, "Quần áo": 0 };
 
-        const now = getVietnamNow();
+        const now = new Date();
         const cM = now.getMonth();
         const cY = now.getFullYear();
         let pM = cM - 1;
         let pY = cY;
         if (pM < 0) { pM = 11; pY--; }
 
-        let sortedData = [...data].sort((a, b) => {
-            // So sánh timestamp dạng yyyy-mm-dd hh:mm:ss
-            if (a.timestamp < b.timestamp) return 1;
-            if (a.timestamp > b.timestamp) return -1;
-            return 0;
-        });
-        
+        let sortedData = [...data].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         let expList = sortedData.filter(t => t.amount < 0).slice(0, 20);
         let incList = sortedData.filter(t => t.amount > 0).slice(0, 20);
 
@@ -1013,7 +783,7 @@ function renderChartsAndStats() {
         if (expList.length && expContainer) {
             let htmlChi = `<table class="history-table"><tbody>`;
             expList.forEach(t => {
-                let dStr = formatDisplayDate(t.timestamp);
+                let dStr = new Date(t.timestamp).toLocaleDateString('vi-VN');
                 let contentStr = `${t.subtype} ${t.note ? `<br><small style="opacity:0.7;"><i>📝 ${t.note}</i></small>` : ''}`;
                 htmlChi += `<tr><td>${dStr}</td><td>${t.type}</td><td>${contentStr}</td><td class="amount-col" style="color:var(--danger-color);">${formatVND(Math.abs(t.amount))}</td></tr>`;
             });
@@ -1027,7 +797,7 @@ function renderChartsAndStats() {
         if (incList.length && incContainer) {
             let htmlThu = `<table class="history-table"><tbody>`;
             incList.forEach(t => {
-                let dStr = formatDisplayDate(t.timestamp);
+                let dStr = new Date(t.timestamp).toLocaleDateString('vi-VN');
                 let contentStr = `${t.subtype} ${t.note ? `<br><small style="opacity:0.7;"><i>📝 ${t.note}</i></small>` : ''}`;
                 htmlThu += `<tr><td>${dStr}</td><td>${t.type}</td><td>${contentStr}</td><td class="amount-col" style="color:var(--success-color);">${formatVND(t.amount)}</td></tr>`;
             });
@@ -1038,20 +808,7 @@ function renderChartsAndStats() {
         }
 
         data.forEach(t => {
-            // Parse timestamp
-            let tDate;
-            if (typeof t.timestamp === 'string' && t.timestamp.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) {
-                const parts = t.timestamp.split(' ');
-                const dateParts = parts[0].split('-');
-                tDate = new Date(
-                    parseInt(dateParts[0]),
-                    parseInt(dateParts[1]) - 1,
-                    parseInt(dateParts[2])
-                );
-            } else {
-                tDate = new Date(t.timestamp);
-            }
-            
+            const tDate = new Date(t.timestamp);
             const amt = t.amount;
 
             if (amt > 0) {
@@ -1062,9 +819,7 @@ function renderChartsAndStats() {
                 totalChi += Math.abs(amt);
                 let absAmt = Math.abs(amt);
 
-                if (!isNaN(tDate.getTime()) && 
-                    tDate.getFullYear() === cY && 
-                    tDate.getMonth() === cM) {
+                if (tDate.getFullYear() === cY && tDate.getMonth() === cM) {
                     catCurrentMonth["Tổng"] += absAmt;
                     if (t.subtype === "Đi chợ, siêu thị" || t.type === "Giải trí") {
                         catCurrentMonth["Ăn uống"] += absAmt;
@@ -1072,9 +827,7 @@ function renderChartsAndStats() {
                     if (t.subtype === "Đồ chơi") catCurrentMonth["Đồ chơi"] += absAmt;
                     if (t.subtype === "Mỹ phẩm") catCurrentMonth["Mỹ phẩm"] += absAmt;
                     if (t.subtype === "Quần áo") catCurrentMonth["Quần áo"] += absAmt;
-                } else if (!isNaN(tDate.getTime()) && 
-                           tDate.getFullYear() === pY && 
-                           tDate.getMonth() === pM) {
+                } else if (tDate.getFullYear() === pY && tDate.getMonth() === pM) {
                     catPrevMonth["Tổng"] += absAmt;
                     if (t.subtype === "Đi chợ, siêu thị" || t.type === "Giải trí") {
                         catPrevMonth["Ăn uống"] += absAmt;
@@ -1126,35 +879,19 @@ function renderTopExpenses() {
     if (!periodSelect) return;
 
     const period = periodSelect.value;
-    const now = getVietnamNow();
+    const now = new Date();
 
     getAllTransactions(data => {
         let filtered = data.filter(t => t.amount < 0).filter(t => {
-            let tDate;
-            if (typeof t.timestamp === 'string' && t.timestamp.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) {
-                const parts = t.timestamp.split(' ');
-                const dateParts = parts[0].split('-');
-                tDate = new Date(
-                    parseInt(dateParts[0]),
-                    parseInt(dateParts[1]) - 1,
-                    parseInt(dateParts[2])
-                );
-            } else {
-                tDate = new Date(t.timestamp);
-            }
-            
-            if (isNaN(tDate.getTime())) return false;
-            
+            let d = new Date(t.timestamp);
             if (period === 'week') {
-                const weekAgo = new Date(now);
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                return tDate >= weekAgo && tDate <= now;
+                return (now - d) <= 7 * 24 * 60 * 60 * 1000;
             }
             if (period === 'month') {
-                return tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
             }
             if (period === 'year') {
-                return tDate.getFullYear() === now.getFullYear();
+                return d.getFullYear() === now.getFullYear();
             }
             return true;
         });
@@ -1201,35 +938,21 @@ function renderSection4(allData) {
 
     const period = periodSelect.value;
     const run = data => {
-        const now = getVietnamNow();
+        const now = new Date();
         let currentBalance = 0;
         let totalThu = 0;
         let fullChi = 0;
         let investmentSavings = 0;
 
         data.forEach(t => {
-            let tDate;
-            if (typeof t.timestamp === 'string' && t.timestamp.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) {
-                const parts = t.timestamp.split(' ');
-                const dateParts = parts[0].split('-');
-                tDate = new Date(
-                    parseInt(dateParts[0]),
-                    parseInt(dateParts[1]) - 1,
-                    parseInt(dateParts[2])
-                );
-            } else {
-                tDate = new Date(t.timestamp);
-            }
-            
+            let d = new Date(t.timestamp);
             currentBalance += t.amount;
 
             let isMatch = false;
-            if (!isNaN(tDate.getTime())) {
-                if (period === 'month') {
-                    isMatch = tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
-                } else {
-                    isMatch = tDate.getFullYear() === now.getFullYear();
-                }
+            if (period === 'month') {
+                isMatch = d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            } else {
+                isMatch = d.getFullYear() === now.getFullYear();
             }
 
             if (isMatch) {
@@ -1514,15 +1237,20 @@ function isCorruptedReminder(r) {
     if (!r || typeof r !== 'object') return true;
     if (!r.content || typeof r.content !== 'string' || !r.content.trim()) return true;
     if (!VALID_REMINDER_FREQUENCIES.includes(r.frequency)) return true;
-    if (!r.startDate || !r.startDate.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) return true;
-    if (r.nextReminderDate && !r.nextReminderDate.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) return true;
+    if (!isValidDateOnlyString(r.startDate)) return true;
+    if (r.nextReminderDate && !isValidDateOnlyString(r.nextReminderDate)) return true;
     return false;
 } // end function isCorruptedReminder
 
+function isValidDateOnlyString(str) {
+    if (!str || typeof str !== 'string') return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(str)) return false;
+    const d = new Date(str);
+    return !isNaN(d.getTime());
+} // end function isValidDateOnlyString
+
 function computeNextReminderDate(fromDateStr, frequency, everyValue, everyUnit) {
-    // Tách lấy phần ngày từ chuỗi yyyy-mm-dd hh:mm:ss
-    const datePart = fromDateStr.slice(0, 10);
-    const d = new Date(datePart);
+    const d = new Date(fromDateStr);
     d.setHours(0, 0, 0, 0);
 
     if (frequency === "DAILY") {
@@ -1543,7 +1271,7 @@ function computeNextReminderDate(fromDateStr, frequency, everyValue, everyUnit) 
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd} 00:00:00`;
+    return `${yyyy}-${mm}-${dd}`;
 } // end function computeNextReminderDate
 
 function saveReminder(event) {
@@ -1568,7 +1296,7 @@ function saveReminder(event) {
     }
 
     const formattedContent = toSentenceCase(content);
-    const startDateStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')} 00:00:00`;
+    const startDateStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
 
     const reminderItem = {
         content: formattedContent,
@@ -1622,7 +1350,6 @@ function generateRemindersInterface() {
         localReminderData = list;
         renderRemindersList(list);
         checkAndTriggerReminders(list);
-        showReminderAlert(list);
     };
     request.onerror = function(e) {
         container.innerHTML = "Lỗi đọc dữ liệu nhắc hẹn.";
@@ -1653,13 +1380,21 @@ function renderRemindersList(list) {
         let freqText = formatFrequencyLabel(r);
 
         let displayDateSource = r.nextReminderDate || r.startDate;
-        let displayDate = displayDateSource ? formatDisplayDate(displayDateSource) : '';
+        let displayDate = displayDateSource;
+        if (displayDateSource) {
+            let parts = displayDateSource.split("-");
+            if (parts.length === 3) {
+                displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+        }
 
         let statusColor = r.status === "ENABLED" ? "var(--success-color)" : "var(--danger-color)";
         let statusText = r.status === "ENABLED" ? "✅ Hoạt động" : "⛔ Tắt";
 
-        const today = getVietnamToday();
-        const remDate = r.nextReminderDate ? r.nextReminderDate.slice(0, 10) : '';
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const remDate = new Date(displayDateSource);
+        remDate.setHours(0,0,0,0);
         let isPast = remDate < today && r.frequency === "ONCE";
 
         html += `<tr style="${isPast ? 'opacity:0.5;' : ''}">
@@ -1688,158 +1423,13 @@ function formatFrequencyLabel(r) {
     return freqMap[r.frequency] || r.frequency || "ONCE";
 } // end function formatFrequencyLabel
 
-// =========================================================================
-// MODAL THÔNG BÁO NHẮC HẸN
-// =========================================================================
-
-function showReminderAlert(reminders) {
-    const modal = document.getElementById('reminderAlertModal');
-    if (!modal) return;
-    
-    const today = getVietnamToday();
-    const dismissed = JSON.parse(localStorage.getItem('reminder_dismissed') || '{}');
-    
-    const activeReminders = reminders.filter(r => {
-        if (r.status === "DISABLED") return false;
-        const key = `${r.id}_${today}`;
-        return !dismissed[key];
-    });
-    
-    if (activeReminders.length === 0) {
-        modal.style.display = 'none';
-        return;
-    }
-    
-    const todayReminders = [];
-    const tomorrowReminders = [];
-    const tomorrow = getVietnamTomorrow();
-    
-    activeReminders.forEach(r => {
-        const targetDateStr = r.nextReminderDate || r.startDate;
-        if (!targetDateStr) return;
-        const targetDate = targetDateStr.slice(0, 10);
-        
-        if (targetDate === today) {
-            todayReminders.push(r);
-        } else if (targetDate === tomorrow) {
-            tomorrowReminders.push(r);
-        }
-    });
-    
-    if (todayReminders.length === 0 && tomorrowReminders.length === 0) {
-        modal.style.display = 'none';
-        return;
-    }
-    
-    const titleEl = document.getElementById('reminder-alert-title');
-    const bodyEl = document.getElementById('reminder-alert-body');
-    const listEl = document.getElementById('reminder-alert-list');
-    const doNotRemindCheckbox = document.getElementById('reminder-do-not-remind');
-    
-    if (doNotRemindCheckbox) doNotRemindCheckbox.checked = false;
-    
-    let html = '';
-    let hasToday = false;
-    let hasTomorrow = false;
-    
-    if (todayReminders.length > 0) {
-        hasToday = true;
-        html += `<div style="color: var(--danger-color); font-weight: bold; margin: 8px 0 4px 0;">📌 HÔM NAY:</div>`;
-        todayReminders.forEach(r => {
-            const freqText = formatFrequencyLabel(r);
-            html += `<div style="padding: 6px 10px; margin: 4px 0; background: var(--secondary-bg); border-radius: 6px; border-left: 3px solid var(--danger-color);">
-                <span style="font-weight: 600;">${r.content}</span>
-                <span style="font-size: 0.75rem; opacity: 0.7; display: block;">Tần suất: ${freqText}</span>
-            </div>`;
-        });
-    }
-    
-    if (tomorrowReminders.length > 0) {
-        hasTomorrow = true;
-        html += `<div style="color: var(--theme-color); font-weight: bold; margin: 8px 0 4px 0;">🔔 NGÀY MAI:</div>`;
-        tomorrowReminders.forEach(r => {
-            const freqText = formatFrequencyLabel(r);
-            html += `<div style="padding: 6px 10px; margin: 4px 0; background: var(--secondary-bg); border-radius: 6px; border-left: 3px solid var(--theme-color);">
-                <span style="font-weight: 600;">${r.content}</span>
-                <span style="font-size: 0.75rem; opacity: 0.7; display: block;">Tần suất: ${freqText}</span>
-            </div>`;
-        });
-    }
-    
-    if (hasToday && hasTomorrow) {
-        titleEl.textContent = '⏰ HÔM NAY VÀ NGÀY MAI CÓ HẸN';
-        bodyEl.textContent = `Bạn có ${todayReminders.length} lịch hẹn hôm nay và ${tomorrowReminders.length} lịch hẹn ngày mai.`;
-    } else if (hasToday) {
-        titleEl.textContent = '⏰ HÔM NAY CÓ HẸN';
-        bodyEl.textContent = `Bạn có ${todayReminders.length} lịch hẹn hôm nay. Hãy nhớ thực hiện nhé!`;
-    } else if (hasTomorrow) {
-        titleEl.textContent = '🔔 NHẮC TRƯỚC 1 NGÀY';
-        bodyEl.textContent = `Bạn có ${tomorrowReminders.length} lịch hẹn vào ngày mai.`;
-    }
-    
-    listEl.innerHTML = html;
-    
-    modal.style.display = 'flex';
-    modal.dataset.reminders = JSON.stringify(activeReminders);
-    modal.dataset.today = today;
-    
-    // Cập nhật lần nhắc cuối và ngày nhắc tiếp theo
-    activeReminders.forEach(r => {
-        r.lastTriggeredAt = formatVietnamDateTime(getVietnamNow());
-        r.synced = 0;
-        updateReminderInDB(r);
-        
-        if (r.frequency !== "ONCE") {
-            const nextDate = computeNextReminderDate(today + ' 00:00:00', r.frequency, r.everyValue, r.everyUnit);
-            if (nextDate) {
-                r.nextReminderDate = nextDate;
-                r.synced = 0;
-                updateReminderInDB(r);
-            }
-        } else {
-            r.status = "DISABLED";
-            r.synced = 0;
-            updateReminderInDB(r);
-        }
-    });
-    
-    // Gửi thông báo đẩy cho iOS
-    if (hasToday) {
-        triggerPushNotification("⏰ HÔM NAY CÓ HẸN", 
-            `Bạn có ${todayReminders.length} lịch hẹn hôm nay.`);
-    }
-    if (hasTomorrow) {
-        triggerPushNotification("🔔 NHẮC TRƯỚC 1 NGÀY", 
-            `Bạn có ${tomorrowReminders.length} lịch hẹn ngày mai.`);
-    }
-} // end function showReminderAlert
-
-function closeReminderAlert() {
-    const modal = document.getElementById('reminderAlertModal');
-    if (!modal) return;
-    
-    const doNotRemindCheckbox = document.getElementById('reminder-do-not-remind');
-    const today = modal.dataset.today || getVietnamToday();
-    const reminders = JSON.parse(modal.dataset.reminders || '[]');
-    
-    if (doNotRemindCheckbox && doNotRemindCheckbox.checked) {
-        const dismissed = JSON.parse(localStorage.getItem('reminder_dismissed') || '{}');
-        reminders.forEach(r => {
-            const key = `${r.id}_${today}`;
-            dismissed[key] = true;
-        });
-        localStorage.setItem('reminder_dismissed', JSON.stringify(dismissed));
-    }
-    
-    modal.style.display = 'none';
-} // end function closeReminderAlert
-
-// =========================================================================
-// CẬP NHẬT HÀM checkAndTriggerReminders
-// =========================================================================
 function checkAndTriggerReminders(reminders) {
-    const today = getVietnamToday();
-    const tomorrow = getVietnamTomorrow();
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const todayStr = formatDateOnly(today);
+    const tomorrowStr = formatDateOnly(tomorrow);
 
     let hasChanges = false;
 
@@ -1849,25 +1439,29 @@ function checkAndTriggerReminders(reminders) {
         const targetDateStr = r.nextReminderDate || r.startDate;
         if (!targetDateStr) return;
 
-        const targetDate = targetDateStr.slice(0, 10);
+        const targetDate = new Date(targetDateStr);
+        targetDate.setHours(0,0,0,0);
 
         if (r.frequency === "ONCE" && targetDate < today) return;
 
-        const alreadyTriggeredToday = r.lastTriggeredAt && 
-            r.lastTriggeredAt.slice(0, 10) === today;
+        const alreadyTriggeredToday = r.lastTriggeredAt && r.lastTriggeredAt.slice(0, 10) === todayStr;
 
-        if ((targetDate === today || targetDate === tomorrow) && !alreadyTriggeredToday) {
-            r.lastTriggeredAt = formatVietnamDateTime(getVietnamNow());
+        if (targetDateStr === tomorrowStr) {
+            triggerPushNotification("🔔 NHẮC TRƯỚC 1 NGÀY", `Ngày mai bạn có hẹn: ${r.content}`);
+        }
+
+        if (targetDateStr === todayStr && !alreadyTriggeredToday) {
+            triggerPushNotification("⏰ HÔM NAY CÓ HẸN", r.content);
+
+            r.lastTriggeredAt = new Date().toISOString();
             r.synced = 0;
             hasChanges = true;
 
             if (r.frequency === "ONCE") {
                 r.status = "DISABLED";
             } else {
-                const nextDate = computeNextReminderDate(today + ' 00:00:00', r.frequency, r.everyValue, r.everyUnit);
-                if (nextDate) {
-                    r.nextReminderDate = nextDate;
-                }
+                const nextDate = computeNextReminderDate(todayStr, r.frequency, r.everyValue, r.everyUnit);
+                if (nextDate) r.nextReminderDate = nextDate;
             }
 
             updateReminderInDB(r);
@@ -1876,10 +1470,15 @@ function checkAndTriggerReminders(reminders) {
 
     if (hasChanges) {
         renderRemindersList(reminders);
-        // Hiển thị modal
-        showReminderAlert(reminders);
     }
 } // end function checkAndTriggerReminders
+
+function formatDateOnly(d) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+} // end function formatDateOnly
 
 function updateReminderInDB(reminderItem) {
     if (!db || !reminderItem.id) return;
@@ -1903,7 +1502,6 @@ function startDailyReminderCheck() {
             request.onsuccess = function(e) {
                 const list = e.target.result || [];
                 checkAndTriggerReminders(list);
-                showReminderAlert(list);
             };
         }
     }, 30 * 60 * 1000);
